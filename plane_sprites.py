@@ -192,11 +192,20 @@ class Enemy(PlaneSprite):
         self.rect.left = random.randint(0, width)
         self.rect.bottom = 0
 
-        # 随机速度
-        self.speed = random.randint(1, 3)
+        # 水平方向
+        direction = random.randint(1, 2)
+        if direction == 1:
+            self.speedx = -1
+        else:
+            self.speedx = 1
+
+        self.speedy = random.randint(1, 3)
 
     def update(self, *args):
         super().update(args)
+
+        if self.rect.left <= 0 or self.rect.right >= SCREEN_RECT.right:
+            self.speedx = -self.speedx
 
         # 判断敌机是否移出屏幕
         if self.rect.top >= SCREEN_RECT.height:
