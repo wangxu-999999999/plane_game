@@ -16,7 +16,7 @@ class GameSprite(pygame.sprite.Sprite):
         self.speedx = speedx
         self.speedy = speedy
 
-    def update(self, *args):
+    def update(self):
         self.rect.top += self.speedy
         self.rect.left += self.speedx
 
@@ -38,8 +38,8 @@ class Background(GameSprite):
         if is_alt:
             self.rect.bottom = 0
 
-    def update(self, *args):
-        super().update(args)
+    def update(self):
+        super().update()
 
         if self.rect.top >= SCREEN_RECT.height:
             self.rect.bottom = 0
@@ -72,29 +72,20 @@ class PlaneSprite(GameSprite):
         self.images = self.__life_images
         # 显示图像索引
         self.show_image_index = 0
-        # 是否循环播放
-        self.is_loop_show = True
-        # 是否可以被删除
-        self.can_destroied = False
 
-    def update(self, *args):
+    def update(self):
         self.update_images()
 
-        super().update(args)
+        super().update()
 
     def update_images(self):
         """更新图像"""
 
         pre_index = int(self.show_image_index)
         self.show_image_index += 0.05
-        count = len(self.images)
 
-        # 判断是否循环播放
-        if self.is_loop_show:
-            self.show_image_index %= len(self.images)
-        elif self.show_image_index > count - 1:
-            self.show_image_index = count - 1
-            self.can_destroied = True
+        # 循环播放
+        self.show_image_index %= len(self.images)
 
         current_index = int(self.show_image_index)
 
@@ -108,8 +99,6 @@ class PlaneSprite(GameSprite):
         self.images = self.__destroy_images
         # 显示图像索引
         self.show_image_index = 0
-        # 是否循环播放
-        self.is_loop_show = False
 
 
 class Hero(PlaneSprite):
@@ -129,7 +118,7 @@ class Hero(PlaneSprite):
         # 创建子弹组
         self.bullets = pygame.sprite.Group()
 
-    def update(self, *args):
+    def update(self):
         self.update_images()
 
         # 飞机水平移动
@@ -171,8 +160,8 @@ class Bullet(GameSprite):
         image_name = "./images/bullet1.png"
         super().__init__(image_name, 0, -3)
 
-    def update(self, *args):
-        super().update(args)
+    def update(self):
+        super().update()
 
         # 判断是否超出屏幕
         if self.rect.bottom < 0:
@@ -195,8 +184,8 @@ class Enemy(PlaneSprite):
         self.speedx = random.randint(-1, 1)
         self.speedy = random.randint(1, 3)
 
-    def update(self, *args):
-        super().update(args)
+    def update(self):
+        super().update()
 
         if self.rect.left <= 0 or self.rect.right >= SCREEN_RECT.right:
             self.speedx = -self.speedx
@@ -204,8 +193,4 @@ class Enemy(PlaneSprite):
         # 判断敌机是否移出屏幕
         if self.rect.top >= SCREEN_RECT.height:
             # 将精灵从所有组中删除
-            self.kill()
-
-        # 判断敌机是否已经被销毁
-        if self.can_destroied:
             self.kill()

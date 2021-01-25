@@ -73,6 +73,7 @@ class PlaneGame:
 
         # 敌机撞毁英雄
         enemies = pygame.sprite.spritecollide(self.hero, self.enemy_group, True)
+        print(self.hero.life)
         self.hero.life -= len(enemies)
         if self.hero.life <= 0:
             print("英雄牺牲了...")
@@ -96,10 +97,6 @@ class PlaneGame:
                 # 集体自爆
                 for enemy in self.enemy_group.sprites():
                     enemy.destroied()
-
-        # 判断英雄是否已经被销毁，如果是，游戏结束！
-        if self.hero.can_destroied:
-            PlaneGame.__finished_game()
 
         # 通过 pygame.key 获取用户按键
         keys_pressed = pygame.key.get_pressed()
