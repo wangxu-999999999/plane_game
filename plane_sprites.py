@@ -48,7 +48,7 @@ class Background(GameSprite):
 class PlaneSprite(GameSprite):
     """飞机精灵，包括敌机和英雄"""
 
-    def __init__(self, image_names, destroy_names, life, speedx, speedy):
+    def __init__(self, image_names, destroy_names, life, speedx=0, speedy=0):
 
         image_name = image_names[0]
         super().__init__(image_name, speedx, speedy)
@@ -120,7 +120,7 @@ class Hero(PlaneSprite):
         image_names = GameSprite.image_names("me", 2)
         destroy_names = GameSprite.image_names("me_destroy_", 4)
 
-        super().__init__(image_names, destroy_names, 3, 0, 0)
+        super().__init__(image_names, destroy_names, 3)
 
         # 设置初始位置
         self.rect.centerx = SCREEN_RECT.centerx
@@ -185,7 +185,7 @@ class Enemy(PlaneSprite):
     def __init__(self):
         image_names = ["./images/enemy1.png"]
         destroy_names = GameSprite.image_names("enemy1_down", 4)
-        super().__init__(image_names, destroy_names, 2, 0, 1)
+        super().__init__(image_names, destroy_names, 2)
 
         # 随机敌机出现位置
         width = SCREEN_RECT.width - self.rect.width
