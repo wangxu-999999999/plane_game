@@ -192,13 +192,7 @@ class Enemy(PlaneSprite):
         self.rect.left = random.randint(0, width)
         self.rect.bottom = 0
 
-        # 水平方向
-        direction = random.randint(1, 2)
-        if direction == 1:
-            self.speedx = -1
-        else:
-            self.speedx = 1
-
+        self.speedx = random.randint(-1, 1)
         self.speedy = random.randint(1, 3)
 
     def update(self, *args):
