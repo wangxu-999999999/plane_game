@@ -56,6 +56,9 @@ class PlaneSprite(GameSprite):
         # 生命值
         self.life = life
 
+        # 是否可以被删除
+        self.can_destroied = False
+
         # 正常图像列表
         self.__life_images = []
         for file_name in image_names:
@@ -73,19 +76,41 @@ class PlaneSprite(GameSprite):
         # 显示图像索引
         self.show_image_index = 0
 
+    def harm(self, num=1):
+        self.life -= num
+        if self.life <= 0:
+            self.destroied()
+
+    def die(self):
+        self.life = 0
+        self.destroied()
+
+    def is_life(self):
+        if self.life > 0:
+            return True
+        return False
+
     def update(self):
         self.update_images()
 
         super().update()
+
+        if self.can_destroied:
+            self.kill()
 
     def update_images(self):
         """更新图像"""
 
         pre_index = int(self.show_image_index)
         self.show_image_index += 0.05
+        count = len(self.images)
 
-        # 循环播放
-        self.show_image_index %= len(self.images)
+        # 判断是否循环播放
+        if self.is_life():
+            self.show_image_index %= len(self.images)
+        elif self.show_image_index > count - 1:
+            self.show_image_index = count - 1
+            self.can_destroied = True
 
         current_index = int(self.show_image_index)
 
@@ -119,7 +144,7 @@ class Hero(PlaneSprite):
         self.bullets = pygame.sprite.Group()
 
     def update(self):
-        self.update_images()
+        super().update()
 
         # 飞机水平移动
         self.rect.left += self.speedx

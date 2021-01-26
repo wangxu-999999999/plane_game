@@ -49,6 +49,8 @@ class PlaneGame:
 
         while True:
             self.clock.tick(60)
+            if self.hero.can_destroied:
+                PlaneGame.__finished_game()
             self.__event_handler()
             self.__update_sprites()
             self.__check_collide()
@@ -63,22 +65,29 @@ class PlaneGame:
                                              False,
                                              True).keys()
         for enemy in enemies:
-            enemy.life -= 1
+            enemy.harm()
 
-            if enemy.life <= 0:
+            if not enemy.is_life():
                 enemy.add(self.destroy_group)
                 enemy.remove(self.enemy_group)
 
-                enemy.destroied()
-
         # 敌机撞毁英雄
-        enemies = pygame.sprite.spritecollide(self.hero, self.enemy_group, True)
-        print(self.hero.life)
-        self.hero.life -= len(enemies)
-        if self.hero.life <= 0:
-            print("英雄牺牲了...")
-            self.hero.destroied()
-            PlaneGame.__finished_game()
+        enemies = pygame.sprite.spritecollide(self.hero, self.enemy_group, False)
+        for enemy in enemies:
+            enemy.die()
+            enemy.add(self.destroy_group)
+            enemy.remove(self.enemy_group)
+
+        num = len(enemies)
+        if num > 0:
+            self.hero.harm(len(enemies))
+            # print(self.hero.life)
+            if not self.hero.is_life():
+                print("英雄牺牲了...")
+                self.hero.add(self.destroy_group)
+                self.hero.remove(self.hero_group)
+                # self.hero.destroied()
+                # PlaneGame.__finished_game()
 
     def __event_handler(self):
         """事件处理"""
