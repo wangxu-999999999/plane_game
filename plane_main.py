@@ -4,8 +4,10 @@ from plane_sprites import *
 
 # 敌机出现事件
 CREATE_ENEMY_EVENT = pygame.USEREVENT
-# 发射子弹事件
+# 英雄发射子弹事件
 HERO_FIRE_EVENT = pygame.USEREVENT + 1
+# 敌机发射子弹事件
+Enemy_FIRE_EVENT = pygame.USEREVENT + 2
 
 
 class PlaneGame:
@@ -38,10 +40,13 @@ class PlaneGame:
         """创建用户事件"""
 
         # 每秒添加一架敌机
-        pygame.time.set_timer(CREATE_ENEMY_EVENT, 1 * 1000)
+        pygame.time.set_timer(CREATE_ENEMY_EVENT, 1000)
 
-        # 每秒发射两次子弹
+        # 英雄每秒发射两次子弹
         pygame.time.set_timer(HERO_FIRE_EVENT, 500)
+
+        # 符合条件的敌机发射子弹
+        pygame.time.set_timer(Enemy_FIRE_EVENT, 500)
 
     def start_game(self):
         """开启游戏循环"""
@@ -69,14 +74,19 @@ class PlaneGame:
             if not enemy.is_life():
                 self.__enemy_rm_group(enemy)
 
-        # 敌机撞毁英雄
-        enemies = pygame.sprite.spritecollide(self.hero, self.enemy_group, False)
         if self.hero.is_life():
+            # 敌机子弹撞毁英雄
+            enemy_bullets = pygame.sprite.spritecollide(self.hero, Enemy.bullets, True)
+            num = len(enemy_bullets)
+
+            # 敌机撞毁英雄
+            enemies = pygame.sprite.spritecollide(self.hero, self.enemy_group, False)
+            num += len(enemies)
+
             for enemy in enemies:
                 enemy.die()
                 self.__enemy_rm_group(enemy)
 
-            num = len(enemies)
             if num > 0:
                 self.hero.life_decr(num)
                 # print(self.hero.life())
@@ -94,6 +104,9 @@ class PlaneGame:
                 self.hero.fire()
             elif event.type == CREATE_ENEMY_EVENT:
                 self.enemy_group.add(Enemy())
+            elif event.type == Enemy_FIRE_EVENT:
+                for enemy in self.enemy_group.sprites():
+                    enemy.fire()
             # 按下 b 英雄自爆
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_b:
                 self.hero.die()
@@ -116,9 +129,8 @@ class PlaneGame:
     def __update_sprites(self):
         """更新/绘制精灵组"""
 
-        for group in [self.back_group, self.hero_group,
-                      self.hero.bullets, self.enemy_group,
-                      self.destroy_group]:
+        for group in [self.back_group, self.hero_group, self.hero.bullets,
+                      self.enemy_group, Enemy.bullets, self.destroy_group]:
             group.update()
             group.draw(self.screen)
 

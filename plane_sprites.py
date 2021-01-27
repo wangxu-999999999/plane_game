@@ -1,5 +1,6 @@
 import random
 import pygame
+import time
 
 # 屏幕尺寸
 SCREEN_RECT = pygame.Rect(0, 0, 480, 700)
@@ -184,7 +185,7 @@ class Hero(PlaneSprite):
         if self.is_life():
             for i in range(0, 3):
                 # 创建子弹精灵
-                bullet = Bullet()
+                bullet = Bullet("./images/bullet1.png", 0, -3)
 
                 # 设置子弹位置
                 bullet.rect.bottom = self.rect.top - i * 20
@@ -197,20 +198,19 @@ class Hero(PlaneSprite):
 class Bullet(GameSprite):
     """子弹精灵"""
 
-    def __init__(self):
-        image_name = "./images/bullet1.png"
-        super().__init__(image_name, 0, -3)
-
     def update(self):
         super().update()
 
         # 判断是否超出屏幕
-        if self.rect.bottom < 0:
+        if self.rect.bottom <= 0 or self.rect.top >= SCREEN_RECT.height:
             self.kill()
 
 
 class Enemy(PlaneSprite):
     """敌机精灵"""
+
+    # 创建子弹组
+    bullets = pygame.sprite.Group()
 
     def __init__(self):
         image_names = ["./images/enemy1.png"]
@@ -225,6 +225,9 @@ class Enemy(PlaneSprite):
         self.speedx = random.randint(-1, 1)
         self.speedy = random.randint(1, 3)
 
+        self.fire_time = None
+        self.fire_interval = 5
+
     def update(self):
         super().update()
 
@@ -235,3 +238,21 @@ class Enemy(PlaneSprite):
         if self.rect.top >= SCREEN_RECT.height:
             # 将精灵从所有组中删除
             self.kill()
+
+    def fire(self):
+        """发射子弹"""
+
+        if self.is_life():
+            now_time = int(time.time())
+            if self.fire_time is None or self.fire_time + self.fire_interval <= now_time:
+                # 创建子弹精灵
+                bullet = Bullet("./images/bullet2.png", 0, self.speedy + 1)
+
+                # 设置子弹位置
+                bullet.rect.top = self.rect.bottom + 10
+                bullet.rect.centerx = self.rect.centerx
+
+                # 将子弹添加到精灵组
+                Enemy.bullets.add(bullet)
+
+                self.fire_time = now_time
