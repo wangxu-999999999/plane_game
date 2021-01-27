@@ -1,6 +1,5 @@
 #! /usr/bin/python3
 
-import pygame
 from plane_sprites import *
 
 # 敌机出现事件
@@ -72,17 +71,18 @@ class PlaneGame:
 
         # 敌机撞毁英雄
         enemies = pygame.sprite.spritecollide(self.hero, self.enemy_group, False)
-        for enemy in enemies:
-            enemy.die()
-            self.__enemy_rm_group(enemy)
+        if self.hero.is_life():
+            for enemy in enemies:
+                enemy.die()
+                self.__enemy_rm_group(enemy)
 
-        num = len(enemies)
-        if num > 0:
-            self.hero.life_decr(num)
-            # print(self.hero.life)
-            if not self.hero.is_life():
-                print("英雄牺牲了...")
-                self.__hero_rm_group(self.hero)
+            num = len(enemies)
+            if num > 0:
+                self.hero.life_decr(num)
+                # print(self.hero.life())
+                if not self.hero.is_life():
+                    print("英雄牺牲了...")
+                    self.__hero_rm_group(self.hero)
 
     def __event_handler(self):
         """事件处理"""
@@ -131,12 +131,16 @@ class PlaneGame:
         exit()
 
     def __enemy_rm_group(self, enemy):
-        enemy.add(self.destroy_group)
+        """敌机移出组"""
+
         enemy.remove(self.enemy_group)
+        enemy.add(self.destroy_group)
 
     def __hero_rm_group(self, hero):
-        hero.add(self.destroy_group)
+        """英雄移出组"""
+
         hero.remove(self.hero_group)
+        hero.add(self.destroy_group)
 
 
 if __name__ == '__main__':

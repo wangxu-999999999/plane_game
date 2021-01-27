@@ -21,7 +21,9 @@ class GameSprite(pygame.sprite.Sprite):
         self.rect.left += self.speedx
 
     @staticmethod
-    def image_names(prefix, count):
+    def image_names(prefix: str, count: int) -> list:
+        """多张图片"""
+
         names = []
         for i in range(1, count + 1):
             names.append("./images/" + prefix + str(i) + ".png")
@@ -77,18 +79,26 @@ class PlaneSprite(GameSprite):
         self.show_image_index = 0
 
     def life_decr(self, num=1):
+        """生命值减少"""
         self.__life -= num
         if self.__life <= 0:
             self.__destroied()
 
     def life_incr(self, num=1):
+        """生命值增加"""
         self.__life += num
 
+    def life(self):
+        """获取生命值"""
+        return self.__life
+
     def die(self):
+        """死亡"""
         self.__life = 0
         self.__destroied()
 
     def is_life(self):
+        """是否存活"""
         if self.__life > 0:
             return True
         return False
@@ -129,6 +139,8 @@ class PlaneSprite(GameSprite):
         self.show_image_index = 0
 
     def is_can_destroied(self):
+        """是否可以摧毁"""
+
         return self.__can_destroied
 
 
@@ -150,11 +162,11 @@ class Hero(PlaneSprite):
         self.bullets = pygame.sprite.Group()
 
     def update(self):
-        super().update()
+        if not self.is_life():
+            self.speedx = 0
+            self.speedy = 0
 
-        # 飞机水平移动
-        self.rect.left += self.speedx
-        self.rect.top += self.speedy
+        super().update()
 
         # 超出屏幕检测
         if self.rect.left < 0:
@@ -169,19 +181,17 @@ class Hero(PlaneSprite):
     def fire(self):
         """发射子弹"""
 
-        # bullet_count = len(self.bullets.sprites())
-        # print("子弹数量 %d" % bullet_count)
+        if self.is_life():
+            for i in range(0, 3):
+                # 创建子弹精灵
+                bullet = Bullet()
 
-        for i in range(0, 3):
-            # 创建子弹精灵
-            bullet = Bullet()
+                # 设置子弹位置
+                bullet.rect.bottom = self.rect.top - i * 20
+                bullet.rect.centerx = self.rect.centerx
 
-            # 设置子弹位置
-            bullet.rect.bottom = self.rect.top - i * 20
-            bullet.rect.centerx = self.rect.centerx
-
-            # 将子弹添加到精灵组
-            self.bullets.add(bullet)
+                # 将子弹添加到精灵组
+                self.bullets.add(bullet)
 
 
 class Bullet(GameSprite):
