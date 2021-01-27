@@ -54,10 +54,10 @@ class PlaneSprite(GameSprite):
         super().__init__(image_name, speedx, speedy)
 
         # 生命值
-        self.life = life
+        self.__life = life
 
         # 是否可以被删除
-        self.can_destroied = False
+        self.__can_destroied = False
 
         # 正常图像列表
         self.__life_images = []
@@ -76,29 +76,32 @@ class PlaneSprite(GameSprite):
         # 显示图像索引
         self.show_image_index = 0
 
-    def harm(self, num=1):
-        self.life -= num
-        if self.life <= 0:
-            self.destroied()
+    def life_decr(self, num=1):
+        self.__life -= num
+        if self.__life <= 0:
+            self.__destroied()
+
+    def life_incr(self, num=1):
+        self.__life += num
 
     def die(self):
-        self.life = 0
-        self.destroied()
+        self.__life = 0
+        self.__destroied()
 
     def is_life(self):
-        if self.life > 0:
+        if self.__life > 0:
             return True
         return False
 
     def update(self):
-        self.update_images()
+        self.__update_images()
 
         super().update()
 
-        if self.can_destroied:
+        if self.__can_destroied:
             self.kill()
 
-    def update_images(self):
+    def __update_images(self):
         """更新图像"""
 
         pre_index = int(self.show_image_index)
@@ -110,20 +113,23 @@ class PlaneSprite(GameSprite):
             self.show_image_index %= len(self.images)
         elif self.show_image_index > count - 1:
             self.show_image_index = count - 1
-            self.can_destroied = True
+            self.__can_destroied = True
 
         current_index = int(self.show_image_index)
 
         if pre_index != current_index:
             self.image = self.images[current_index]
 
-    def destroied(self):
+    def __destroied(self):
         """飞机被摧毁"""
 
         # 默认播放生存图片
         self.images = self.__destroy_images
         # 显示图像索引
         self.show_image_index = 0
+
+    def is_can_destroied(self):
+        return self.__can_destroied
 
 
 class Hero(PlaneSprite):

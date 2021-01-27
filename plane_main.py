@@ -49,7 +49,7 @@ class PlaneGame:
 
         while True:
             self.clock.tick(60)
-            if self.hero.can_destroied:
+            if self.hero.is_can_destroied():
                 PlaneGame.__finished_game()
             self.__event_handler()
             self.__update_sprites()
@@ -65,29 +65,24 @@ class PlaneGame:
                                              False,
                                              True).keys()
         for enemy in enemies:
-            enemy.harm()
+            enemy.life_decr()
 
             if not enemy.is_life():
-                enemy.add(self.destroy_group)
-                enemy.remove(self.enemy_group)
+                self.__enemy_rm_group(enemy)
 
         # 敌机撞毁英雄
         enemies = pygame.sprite.spritecollide(self.hero, self.enemy_group, False)
         for enemy in enemies:
             enemy.die()
-            enemy.add(self.destroy_group)
-            enemy.remove(self.enemy_group)
+            self.__enemy_rm_group(enemy)
 
         num = len(enemies)
         if num > 0:
-            self.hero.harm(len(enemies))
+            self.hero.life_decr(num)
             # print(self.hero.life)
             if not self.hero.is_life():
                 print("英雄牺牲了...")
-                self.hero.add(self.destroy_group)
-                self.hero.remove(self.hero_group)
-                # self.hero.destroied()
-                # PlaneGame.__finished_game()
+                self.__hero_rm_group(self.hero)
 
     def __event_handler(self):
         """事件处理"""
@@ -101,11 +96,13 @@ class PlaneGame:
                 self.enemy_group.add(Enemy())
             # 按下 b 英雄自爆
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_b:
-                # self.hero.destroied()
+                self.hero.die()
+                self.__hero_rm_group(self.hero)
 
                 # 集体自爆
                 for enemy in self.enemy_group.sprites():
-                    enemy.destroied()
+                    enemy.die()
+                    self.__enemy_rm_group(enemy)
 
         # 通过 pygame.key 获取用户按键
         keys_pressed = pygame.key.get_pressed()
@@ -132,6 +129,14 @@ class PlaneGame:
         print("退出游戏")
         pygame.quit()
         exit()
+
+    def __enemy_rm_group(self, enemy):
+        enemy.add(self.destroy_group)
+        enemy.remove(self.enemy_group)
+
+    def __hero_rm_group(self, hero):
+        hero.add(self.destroy_group)
+        hero.remove(self.hero_group)
 
 
 if __name__ == '__main__':
