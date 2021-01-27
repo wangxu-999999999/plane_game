@@ -63,11 +63,11 @@ class PlaneGame:
     def __check_collide(self):
         """碰撞检测"""
 
+        # 双方子弹抵消
+        pygame.sprite.groupcollide(self.hero.bullets, Enemy.bullets, True, True)
+
         # 子弹摧毁敌机
-        enemies = pygame.sprite.groupcollide(self.enemy_group,
-                                             self.hero.bullets,
-                                             False,
-                                             True).keys()
+        enemies = pygame.sprite.groupcollide(self.enemy_group, self.hero.bullets, False, True).keys()
         for enemy in enemies:
             enemy.life_decr()
 
@@ -142,13 +142,13 @@ class PlaneGame:
         pygame.quit()
         exit()
 
-    def __enemy_rm_group(self, enemy):
+    def __enemy_rm_group(self, enemy: Enemy):
         """敌机移出组"""
 
         enemy.remove(self.enemy_group)
         enemy.add(self.destroy_group)
 
-    def __hero_rm_group(self, hero):
+    def __hero_rm_group(self, hero: Hero):
         """英雄移出组"""
 
         hero.remove(self.hero_group)

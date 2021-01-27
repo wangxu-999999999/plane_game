@@ -9,7 +9,7 @@ SCREEN_RECT = pygame.Rect(0, 0, 480, 700)
 class GameSprite(pygame.sprite.Sprite):
     """游戏精灵"""
 
-    def __init__(self, image_name, speedx=0, speedy=0):
+    def __init__(self, image_name: str, speedx: int = 0, speedy: int = 0):
         super().__init__()
 
         self.image = pygame.image.load(image_name)
@@ -51,7 +51,7 @@ class Background(GameSprite):
 class PlaneSprite(GameSprite):
     """飞机精灵，包括敌机和英雄"""
 
-    def __init__(self, image_names, destroy_names, life, speedx=0, speedy=0):
+    def __init__(self, image_names: list, destroy_names: list, life: int, speedx: int = 0, speedy: int = 0):
 
         image_name = image_names[0]
         super().__init__(image_name, speedx, speedy)
