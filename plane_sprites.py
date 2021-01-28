@@ -35,8 +35,10 @@ class GameSprite(pygame.sprite.Sprite):
 class Background(GameSprite):
     """背景精灵"""
 
+    __image_path = "./images/background.png"
+
     def __init__(self, is_alt=False):
-        super().__init__("./images/background.png", 0, 1)
+        super().__init__(Background.__image_path, 0, 1)
 
         if is_alt:
             self.rect.bottom = 0
@@ -148,12 +150,15 @@ class PlaneSprite(GameSprite):
 class Hero(PlaneSprite):
     """英雄精灵"""
 
+    __init_life = 3
+    __bullet_image_path = "./images/bullet1.png"
+
     def __init__(self):
 
         image_names = GameSprite.image_names("me", 2)
         destroy_names = GameSprite.image_names("me_destroy_", 4)
 
-        super().__init__(image_names, destroy_names, 3)
+        super().__init__(image_names, destroy_names, Hero.__init_life)
 
         # 设置初始位置
         self.rect.centerx = SCREEN_RECT.centerx
@@ -185,7 +190,7 @@ class Hero(PlaneSprite):
         if self.is_life():
             for i in range(0, 3):
                 # 创建子弹精灵
-                bullet = Bullet("./images/bullet1.png", 0, -3)
+                bullet = Bullet(Hero.__bullet_image_path, 0, -3)
 
                 # 设置子弹位置
                 bullet.rect.bottom = self.rect.top - i * 20
@@ -209,13 +214,16 @@ class Bullet(GameSprite):
 class Enemy(PlaneSprite):
     """敌机精灵"""
 
+    __init_life = 2
+    __enemy_image_path = "./images/bullet2.png"
+
     # 创建子弹组
     bullets = pygame.sprite.Group()
 
     def __init__(self):
         image_names = ["./images/enemy1.png"]
         destroy_names = GameSprite.image_names("enemy1_down", 4)
-        super().__init__(image_names, destroy_names, 2)
+        super().__init__(image_names, destroy_names, Enemy.__init_life)
 
         # 随机敌机出现位置
         width = SCREEN_RECT.width - self.rect.width
@@ -246,7 +254,7 @@ class Enemy(PlaneSprite):
             now_time = int(time.time())
             if self.fire_time is None or self.fire_time + self.fire_interval <= now_time:
                 # 创建子弹精灵
-                bullet = Bullet("./images/bullet2.png", 0, self.speedy + 1)
+                bullet = Bullet(Enemy.__enemy_image_path, 0, self.speedy + 1)
 
                 # 设置子弹位置
                 bullet.rect.top = self.rect.bottom + 10
