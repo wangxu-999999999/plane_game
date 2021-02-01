@@ -264,3 +264,29 @@ class Enemy(PlaneSprite):
                 Enemy.bullets.add(bullet)
 
                 self.fire_time = now_time
+
+
+class Star(GameSprite):
+    """星"""
+
+    __image_path = "./images/star.png"
+
+    def __init__(self):
+        self.speedx = random.randint(-1, 1)
+        self.speedy = random.randint(1, 3)
+        super().__init__(Star.__image_path, self.speedx, self.speedy)
+        # 随机出现位置
+        width = SCREEN_RECT.width - self.rect.width
+        self.rect.left = random.randint(0, width)
+        self.rect.bottom = 0
+
+    def update(self):
+        super().update()
+
+        if self.rect.left <= 0 or self.rect.right >= SCREEN_RECT.right:
+            self.speedx = -self.speedx
+
+        # 判断是否移出屏幕
+        if self.rect.top >= SCREEN_RECT.height:
+            # 将精灵从所有组中删除
+            self.kill()

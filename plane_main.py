@@ -8,6 +8,8 @@ CREATE_ENEMY_EVENT = pygame.USEREVENT
 HERO_FIRE_EVENT = pygame.USEREVENT + 1
 # 敌机发射子弹事件
 Enemy_FIRE_EVENT = pygame.USEREVENT + 2
+# 星出现事件
+CREATE_STAR_EVENT = pygame.USEREVENT + 3
 
 
 class PlaneGame:
@@ -35,6 +37,8 @@ class PlaneGame:
         self.enemy_group = pygame.sprite.Group()
         self.destroy_group = pygame.sprite.Group()
 
+        self.star_group = pygame.sprite.Group()
+
     @staticmethod
     def __create_user_events():
         """创建用户事件"""
@@ -47,6 +51,9 @@ class PlaneGame:
 
         # 符合条件的敌机发射子弹
         pygame.time.set_timer(Enemy_FIRE_EVENT, 500)
+
+        # 每60秒添加一个星
+        pygame.time.set_timer(CREATE_STAR_EVENT, 60000)
 
     def start_game(self):
         """开启游戏循环"""
@@ -65,6 +72,12 @@ class PlaneGame:
 
         # 双方子弹抵消
         pygame.sprite.groupcollide(self.hero.bullets, Enemy.bullets, True, True)
+
+        # 英雄得到星
+        stars = pygame.sprite.spritecollide(self.hero, self.star_group, True)
+        num = len(stars)
+        if num > 0:
+            self.hero.life_incr(num)
 
         # 子弹摧毁敌机
         enemies = pygame.sprite.groupcollide(self.enemy_group, self.hero.bullets, False, True).keys()
@@ -104,6 +117,8 @@ class PlaneGame:
                 self.hero.fire()
             elif event.type == CREATE_ENEMY_EVENT:
                 self.enemy_group.add(Enemy())
+            elif event.type == CREATE_STAR_EVENT:
+                self.star_group.add(Star())
             elif event.type == Enemy_FIRE_EVENT:
                 for enemy in self.enemy_group.sprites():
                     enemy.fire()
@@ -130,7 +145,8 @@ class PlaneGame:
         """更新/绘制精灵组"""
 
         for group in [self.back_group, self.hero_group, self.hero.bullets,
-                      self.enemy_group, Enemy.bullets, self.destroy_group]:
+                      self.enemy_group, Enemy.bullets, self.destroy_group,
+                      self.star_group]:
             group.update()
             group.draw(self.screen)
 
