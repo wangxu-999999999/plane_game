@@ -26,6 +26,8 @@ class PlaneGame:
         self.__create_sprites()
         PlaneGame.__create_user_events()
 
+        self.info_bar = InfoBar(self.screen, self.hero)
+
     def __create_sprites(self):
         """创建精灵组"""
 
@@ -149,6 +151,8 @@ class PlaneGame:
                       self.star_group]:
             group.update()
             group.draw(self.screen)
+
+        self.info_bar.update()
 
     @staticmethod
     def __finished_game():

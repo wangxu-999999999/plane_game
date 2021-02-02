@@ -290,3 +290,24 @@ class Star(GameSprite):
         if self.rect.top >= SCREEN_RECT.height:
             # 将精灵从所有组中删除
             self.kill()
+
+
+class InfoBar:
+    """信息栏"""
+
+    __height = 20
+    __hero_image_path = "./images/life2.png"
+
+    def __init__(self, screen, hero):
+        self.screen = screen
+        self.hero = hero
+        self.hero_surface = pygame.image.load(InfoBar.__hero_image_path)
+        self.font = pygame.font.Font(None, 25)
+        self.update()
+
+    def update(self):
+        pygame.draw.rect(self.screen, (255, 255, 255),
+                         (0, SCREEN_RECT.height - InfoBar.__height, SCREEN_RECT.width, InfoBar.__height), 0)
+        self.screen.blit(self.hero_surface, (20, SCREEN_RECT.height - InfoBar.__height))
+        font_surface = self.font.render(" × " + str(self.hero.life()), True, (0, 0, 0))
+        self.screen.blit(font_surface, (40, SCREEN_RECT.height - InfoBar.__height))
