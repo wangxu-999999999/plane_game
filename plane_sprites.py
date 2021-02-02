@@ -216,11 +216,14 @@ class Enemy(PlaneSprite):
 
     __init_life = 2
     __enemy_image_path = "./images/bullet2.png"
+    __count = 0
 
     # 创建子弹组
     bullets = pygame.sprite.Group()
 
     def __init__(self):
+        Enemy.__count += 1
+
         image_names = ["./images/enemy1.png"]
         destroy_names = GameSprite.image_names("enemy1_down", 4)
         super().__init__(image_names, destroy_names, Enemy.__init_life)
@@ -265,6 +268,13 @@ class Enemy(PlaneSprite):
 
                 self.fire_time = now_time
 
+    def __del__(self):
+        Enemy.__count -= 1
+
+    @staticmethod
+    def count():
+        return Enemy.__count
+
 
 class Star(GameSprite):
     """星"""
@@ -295,19 +305,26 @@ class Star(GameSprite):
 class InfoBar:
     """信息栏"""
 
-    __height = 20
+    __height = 40
     __hero_image_path = "./images/life2.png"
+    __enemy_image_path = "./images/enemy12.png"
 
     def __init__(self, screen, hero):
         self.screen = screen
         self.hero = hero
         self.hero_surface = pygame.image.load(InfoBar.__hero_image_path)
+        self.enemy_surface = pygame.image.load(InfoBar.__enemy_image_path)
         self.font = pygame.font.Font(None, 25)
         self.update()
 
     def update(self):
         pygame.draw.rect(self.screen, (255, 255, 255),
-                         (0, SCREEN_RECT.height - InfoBar.__height, SCREEN_RECT.width, InfoBar.__height), 0)
-        self.screen.blit(self.hero_surface, (20, SCREEN_RECT.height - InfoBar.__height))
+                         (0, SCREEN_RECT.height - InfoBar.__height, 60, InfoBar.__height), 0)
+        # 英雄图片
+        self.screen.blit(self.hero_surface, (0, SCREEN_RECT.height - InfoBar.__height))
         font_surface = self.font.render(" × " + str(self.hero.life()), True, (0, 0, 0))
-        self.screen.blit(font_surface, (40, SCREEN_RECT.height - InfoBar.__height))
+        self.screen.blit(font_surface, (20, SCREEN_RECT.height - InfoBar.__height))
+        # 敌机图片
+        self.screen.blit(self.enemy_surface, (0, SCREEN_RECT.height - InfoBar.__height + 20))
+        font_surface = self.font.render(" × " + str(Enemy.count()), True, (0, 0, 0))
+        self.screen.blit(font_surface, (20, SCREEN_RECT.height - InfoBar.__height + 20))
