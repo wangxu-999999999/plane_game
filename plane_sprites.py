@@ -91,6 +91,8 @@ class PlaneSprite(GameSprite):
         """生命值增加"""
         self.__life += num
 
+        Sound.star()
+
     def life(self):
         """获取生命值"""
         return self.__life
@@ -140,6 +142,8 @@ class PlaneSprite(GameSprite):
         self.images = self.__destroy_images
         # 显示图像索引
         self.show_image_index = 0
+
+        Sound.blast()
 
     def is_can_destroied(self):
         """是否可以摧毁"""
@@ -198,6 +202,8 @@ class Hero(PlaneSprite):
 
                 # 将子弹添加到精灵组
                 self.bullets.add(bullet)
+
+            Sound.hero_fire()
 
 
 class Bullet(GameSprite):
@@ -268,6 +274,8 @@ class Enemy(PlaneSprite):
 
                 self.fire_time = now_time
 
+                Sound.enemy_fire()
+
     def __del__(self):
         Enemy.__count -= 1
 
@@ -328,3 +336,35 @@ class InfoBar:
         self.screen.blit(self.enemy_surface, (0, SCREEN_RECT.height - InfoBar.__height + 20))
         font_surface = self.font.render(" × " + str(Enemy.count()), True, (0, 0, 0))
         self.screen.blit(font_surface, (20, SCREEN_RECT.height - InfoBar.__height + 20))
+
+
+class Sound:
+    """音效"""
+
+    @staticmethod
+    def blast():
+        """爆炸"""
+
+        pygame.mixer.music.load("./res/audio/blast.ogg")
+        pygame.mixer.music.play()
+
+    @staticmethod
+    def hero_fire():
+        """英雄射击"""
+
+        pygame.mixer.music.load("./res/audio/hero_fire.ogg")
+        pygame.mixer.music.play()
+
+    @staticmethod
+    def enemy_fire():
+        """敌机射击"""
+
+        pygame.mixer.music.load("./res/audio/enemy_fire.ogg")
+        pygame.mixer.music.play()
+
+    @staticmethod
+    def star():
+        """星"""
+
+        pygame.mixer.music.load("./res/audio/star.ogg")
+        pygame.mixer.music.play()
