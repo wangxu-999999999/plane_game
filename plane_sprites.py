@@ -345,26 +345,22 @@ class Sound:
     def blast():
         """爆炸"""
 
-        pygame.mixer.music.load("./res/audio/blast.ogg")
-        pygame.mixer.music.play()
+        pygame.mixer.Sound("./res/audio/blast.ogg").play()
 
     @staticmethod
     def hero_fire():
         """英雄射击"""
 
-        pygame.mixer.music.load("./res/audio/hero_fire.ogg")
-        pygame.mixer.music.play()
+        pygame.mixer.Sound("./res/audio/hero_fire.ogg").play()
 
     @staticmethod
     def enemy_fire():
         """敌机射击"""
 
-        pygame.mixer.music.load("./res/audio/enemy_fire.ogg")
-        pygame.mixer.music.play()
+        pygame.mixer.Sound("./res/audio/enemy_fire.ogg").play()
 
     @staticmethod
     def star():
         """星"""
 
-        pygame.mixer.music.load("./res/audio/star.ogg")
-        pygame.mixer.music.play()
+        pygame.mixer.Sound("./res/audio/star.ogg").play()
