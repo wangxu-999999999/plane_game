@@ -27,7 +27,7 @@ class GameSprite(pygame.sprite.Sprite):
 
         names = []
         for i in range(1, count + 1):
-            names.append("./images/" + prefix + str(i) + ".png")
+            names.append("./res/images/" + prefix + str(i) + ".png")
 
         return names
 
@@ -35,7 +35,7 @@ class GameSprite(pygame.sprite.Sprite):
 class Background(GameSprite):
     """背景精灵"""
 
-    __image_path = "./images/background.png"
+    __image_path = "./res/images/background.png"
 
     def __init__(self, is_alt=False):
         super().__init__(Background.__image_path, 0, 1)
@@ -155,7 +155,7 @@ class Hero(PlaneSprite):
     """英雄精灵"""
 
     __init_life = 3
-    __bullet_image_path = "./images/bullet1.png"
+    __bullet_image_path = "./res/images/bullet1.png"
 
     def __init__(self):
 
@@ -221,7 +221,7 @@ class Enemy(PlaneSprite):
     """敌机精灵"""
 
     __init_life = 2
-    __enemy_image_path = "./images/bullet2.png"
+    __enemy_image_path = "./res/images/bullet2.png"
     __count = 0
 
     # 创建子弹组
@@ -230,7 +230,7 @@ class Enemy(PlaneSprite):
     def __init__(self):
         Enemy.__count += 1
 
-        image_names = ["./images/enemy1.png"]
+        image_names = ["./res/images/enemy1.png"]
         destroy_names = GameSprite.image_names("enemy1_down", 4)
         super().__init__(image_names, destroy_names, Enemy.__init_life)
 
@@ -287,7 +287,7 @@ class Enemy(PlaneSprite):
 class Star(GameSprite):
     """星"""
 
-    __image_path = "./images/star.png"
+    __image_path = "./res/images/star.png"
 
     def __init__(self):
         self.speedx = random.randint(-1, 1)
@@ -314,8 +314,8 @@ class InfoBar:
     """信息栏"""
 
     __height = 40
-    __hero_image_path = "./images/life2.png"
-    __enemy_image_path = "./images/enemy12.png"
+    __hero_image_path = "./res/images/life2.png"
+    __enemy_image_path = "./res/images/enemy12.png"
 
     def __init__(self, screen, hero):
         self.screen = screen
