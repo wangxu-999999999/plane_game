@@ -314,8 +314,8 @@ class InfoBar:
     """信息栏"""
 
     __height = 40
-    __hero_image_path = "./res/images/life2.png"
-    __enemy_image_path = "./res/images/enemy12.png"
+    __hero_image_path = "./res/images/info_bar_hero.png"
+    __enemy_image_path = "./res/images/info_bar_enemy1.png"
 
     def __init__(self, screen, hero):
         self.screen = screen
